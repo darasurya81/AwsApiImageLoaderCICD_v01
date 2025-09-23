@@ -17,36 +17,42 @@
   </style>
 </head>
 <body>
-  <h2>Click button to display image from AWS API</h2>
+  <h2>Enter Image Name to Display</h2>
+  <input type="text" id="imageNameInput" placeholder="Enter image name (e.g. sample.jpg)" />
   <button id="loadImageBtn">Display Image</button>
 
   <div id="imageContainer"></div>
 
   <script>
     document.getElementById('loadImageBtn').addEventListener('click', function () {
-      const apiUrl = 'https://your-aws-api-endpoint.com/get-image'; // Replace with your actual AWS API URL
+      const imageName = document.getElementById('imageNameInput').value.trim();
+      if (!imageName) {
+        alert('Please enter the image name');
+        return;
+      }
+      // API URL - Replace with your actual AWS API endpoint
+      // Sending imageName as query parameter like: ?imageName=xxx
+      const apiUrl = `https://your-aws-api-endpoint.com/get-image?imageName=${encodeURIComponent(imageName)}`;
 
       fetch(apiUrl)
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.json(); // Assuming the API returns JSON containing image URL
+          return response.json(); // Assuming API returns JSON with imageUrl
         })
         .then(data => {
-          // Assuming API response format: { "imageUrl": "https://..." }
           const imageUrl = data.imageUrl;
           if (imageUrl) {
             const imgElement = document.createElement('img');
             imgElement.src = imageUrl;
-            imgElement.alt = 'Image from AWS API';
+            imgElement.alt = imageName;
 
             const container = document.getElementById('imageContainer');
-            // Clear previous images if any
-            container.innerHTML = '';
+            container.innerHTML = ''; // Clear previous images
             container.appendChild(imgElement);
           } else {
-            alert('No image URL received from API');
+            alert('Image URL not found in API response');
           }
         })
         .catch(error => {
