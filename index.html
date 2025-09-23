@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Display Image from AWS API</title>
+  <style>
+    #imageContainer {
+      margin-top: 20px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      padding: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Click button to display image from AWS API</h2>
+  <button id="loadImageBtn">Display Image</button>
+
+  <div id="imageContainer"></div>
+
+  <script>
+    document.getElementById('loadImageBtn').addEventListener('click', function () {
+      const apiUrl = 'https://your-aws-api-endpoint.com/get-image'; // Replace with your actual AWS API URL
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json(); // Assuming the API returns JSON containing image URL
+        })
+        .then(data => {
+          // Assuming API response format: { "imageUrl": "https://..." }
+          const imageUrl = data.imageUrl;
+          if (imageUrl) {
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.alt = 'Image from AWS API';
+
+            const container = document.getElementById('imageContainer');
+            // Clear previous images if any
+            container.innerHTML = '';
+            container.appendChild(imgElement);
+          } else {
+            alert('No image URL received from API');
+          }
+        })
+        .catch(error => {
+          console.error('Failed to fetch image:', error);
+          alert('Error loading image from API');
+        });
+    });
+  </script>
+</body>
+</html>
