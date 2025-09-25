@@ -32,7 +32,7 @@
       }
       // API URL - Replace with your actual AWS API endpoint
       // Sending imageName as query parameter like: ?imageName=xxx
-      const apiUrl = `https://your-aws-api-endpoint.com/get-image?imageName=${encodeURIComponent(imageName)}`;
+      const apiUrl = `https://u02kaofa4f.execute-api.us-east-1.amazonaws.com/dev/get-image?imageName=${encodeURIComponent(imageName)}`;
 
       fetch(apiUrl)
         .then(response => {
@@ -42,19 +42,19 @@
           return response.json(); // Assuming API returns JSON with imageUrl
         })
         .then(data => {
-          const imageUrl = data.imageUrl;
-          if (imageUrl) {
-            const imgElement = document.createElement('img');
-            imgElement.src = imageUrl;
-            imgElement.alt = imageName;
-
-            const container = document.getElementById('imageContainer');
-            container.innerHTML = ''; // Clear previous images
-            container.appendChild(imgElement);
-          } else {
-            alert('Image URL not found in API response');
-          }
-        })
+  const parsedBody = JSON.parse(data.body);  // Parse the stringified JSON in body
+  const imageUrl = parsedBody.imageUrl;
+  if (imageUrl) {
+    const imgElement = document.createElement('img');
+    imgElement.src = imageUrl;
+    imgElement.alt = imageName;
+    const container = document.getElementById('imageContainer');
+    container.innerHTML = ''; // Clear previous images
+    container.appendChild(imgElement);
+  } else {
+    alert('Image URL not found in API response');
+  }
+})
         .catch(error => {
           console.error('Failed to fetch image:', error);
           alert('Error loading image from API');
